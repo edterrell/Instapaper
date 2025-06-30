@@ -1,13 +1,12 @@
 import pandas as pd
 from dateutil import parser
 from urllib.parse import urlparse
-
-import requests
 from bs4 import BeautifulSoup as bs
 
 import time
-#import sys
-#sys.executable
+import sys
+print (sys.executable)
+#breakpoint()
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -15,6 +14,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.action_chains import ActionChains
 
 # Get username and password and store them in variables
 from pathlib import Path
@@ -28,19 +28,52 @@ with open(base_path / "instapaper_password.txt", "r") as f:
 
 # Start Safari (or Chrome)
 driver = webdriver.Safari()
-
 driver.get("https://www.instapaper.com/user/login")
-username_field = driver.find_element(By.ID, "username")
-password_field = driver.find_element(By.ID, "password")
 
-# Fill in login form
-username_field.send_keys(username)
-time.sleep(1)
-password_field.send_keys(password)
-password_field.send_keys(Keys.RETURN)
+# create a 10‑second WebDriverWait
+wait = WebDriverWait(driver, 10)
 
-# Wait for redirect
-time.sleep(3)
+USERNAME_LOCATOR = (By.ID, "username") 
+PASSWORD_LOCATOR = (By.ID, "password")
+
+def wait_click_and_type(driver, locator, text, timeout=10):
+    """
+    Waits for an element to be present, visible, enabled, and clickable,
+    scrolls it into view, retries click via JS or ActionChains,
+    clears it, and sends text.
+    """
+    wait = WebDriverWait(driver, timeout)
+    # 1) Wait for presence
+    el = wait.until(EC.presence_of_element_located(locator))
+    # 2) Optionally wait for it to be visible
+    el = wait.until(EC.visibility_of(el))
+    # 3) Optionally wait for it to be clickable
+    el = wait.until(EC.element_to_be_clickable(locator))
+    # 4) Scroll into view
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", el)
+    # 5) Click / focus
+    try:
+        el.click()
+    except Exception:
+        # JS fallback
+        driver.execute_script("arguments[0].click();", el)
+    # 6) ActionChains fallback (if JS click still fails)
+    try:
+        ActionChains(driver).move_to_element(el).click().perform()
+    except Exception:
+        pass
+    # 7) Clear and type
+    el.clear()
+    el.send_keys(text)
+    return el
+
+# Fill and submit
+wait_click_and_type(driver, (By.ID, "username"), username)
+pw_field = wait_click_and_type(driver, (By.ID, "password"), password)
+pw_field.send_keys(Keys.RETURN)
+
+# Wait for something that only appears when logged in
+wait.until(EC.presence_of_element_located((By.ID, "main_container")))
 
 def parse_url(url):
     all_clean_links = []
