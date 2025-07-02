@@ -4,13 +4,21 @@
 instapaper_test.py
 
 Brief: 
-   This program queries Instapaper and collects a list of the 
-   web pages saved. In order, for the program to log in with your credentials, 
-   safely store them locally in:
-   '~/bin/passwords'. The files must be named instapaper_password.txt and instapaper_username.txt
+   This program queries Instapaper and collects a list of your
+   saved web pages. There are three output files created: 
+   1) clickable_links.html
+   2) article_listing.html
+   3) instapaper_articles.csv
+   Please note that websites periodically change and some websites will throw a 404 error,
+   stating that Page Not Found -The requested URL was not found on this server.
 
 Usage:
     $ python instapaper_test.py OR $ ./instapaper_test.py
+
+Technical:
+In order, for the program to auto-log in with your credentials, create a directory 'passwords' in
+'~/bin/'. The two required files should be named instapaper_password.txt and instapaper_username.txt.
+    
 
 Author: Ed Terrell
 Created: 2025-07-01
@@ -19,7 +27,7 @@ Version: 0.1.0
 """
 
 # Standard library and third party imports
-#import os
+# import os
 
 import pandas as pd
 from dateutil import parser
@@ -31,7 +39,6 @@ import sys
 print (sys.executable)
 #breakpoint()
 
-# Program
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
