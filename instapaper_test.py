@@ -5,21 +5,21 @@ instapaper_test.py
 
 Brief: 
    This program queries Instapaper and collects a list of your
-   saved web pages. There are three output files created: 
+   archived web pages. There are three output files created: 
    1) clickable_links.html
    2) article_listing.html
    3) instapaper_articles.csv
-   Please note that websites periodically change and some websites will throw a 404 error,
-   stating that Page Not Found -The requested URL was not found on this server.
-
+Note that running this program will overwrite previous versions of these files!
+   
 Usage:
     $ python instapaper_test.py OR $ ./instapaper_test.py
 
 Technical:
 In order, for the program to auto-log in with your credentials, create a directory 'passwords' in
 '~/bin/'. The two required files should be named instapaper_password.txt and instapaper_username.txt.
+Please note that websites periodically change and some websites will throw an error,
+stating: Page Not Found -The requested URL was not found on this server.
     
-
 Author: Ed Terrell
 Created: 2025-07-01
 Updated: 2025-07-01
@@ -27,7 +27,6 @@ Version: 0.1.0
 """
 
 # Standard library and third party imports
-# import os
 
 import pandas as pd
 from dateutil import parser
@@ -37,7 +36,6 @@ from bs4 import BeautifulSoup as bs
 import time
 import sys
 print (sys.executable)
-#breakpoint()
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -150,14 +148,15 @@ def parse_url(url):
 
 # assign the function's return variables to be used out of scope
 url = "https://www.instapaper.com/archive"
+# url = "https://www.instapaper.com/" used for testing if 'next page' link does not exist
 all_clean_links, soup, next_soup = parse_url(url)   
 
 driver.quit()
 # print(len(all_clean_links))
 
 
-# Store clickable_links.html for web viewing 
-# Filter out links containing "instapaper" or "ads/click"
+# Save file clickable_links.html for web viewing 
+# Filter links containing "instapaper" or "ads/click"
 urls = [
     url for url in all_clean_links
     if 'instapaper' not in url and 'ads/click' not in url
@@ -181,10 +180,9 @@ titles, previews, url_links = extract_article_data(soup)
 
 if next_soup:
     titles2, previews2, url_links2 = extract_article_data(next_soup)
-
-titles = titles + titles2
-previews = previews + previews2
-url_links = url_links + url_links2
+    titles = titles + titles2
+    previews = previews + previews2
+    url_links = url_links + url_links2
 
 df = pd.DataFrame({'Title':titles,'Link':url_links,'Preview':previews})
 df.tail()
