@@ -1,3 +1,26 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+instapaper_test.py
+
+Brief: 
+   This program queries Instapaper and collects a list of the 
+   web pages saved. In order, for the program to log in with your credentials, 
+   safely store them locally in:
+   '~/bin/passwords'. The files must be named instapaper_password.txt and instapaper_username.txt
+
+Usage:
+    $ python instapaper_test.py OR $ ./instapaper_test.py
+
+Author: Ed Terrell
+Created: 2025-07-01
+Updated: 2025-07-01
+Version: 0.1.0
+"""
+
+# Standard library and third party imports
+#import os
+
 import pandas as pd
 from dateutil import parser
 from urllib.parse import urlparse
@@ -8,6 +31,7 @@ import sys
 print (sys.executable)
 #breakpoint()
 
+# Program
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
