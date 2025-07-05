@@ -9,17 +9,19 @@ Brief:
    1) clickable_links.html
    2) article_listing.html
    3) instapaper_articles.csv
-Note that running this program will overwrite previous versions of these files!
+Note that running this program will overwrite previous versions of these files! 
+Websites periodically change and some websites may throw an error in the future,
+stating: Page Not Found -The requested URL was not found on this server.
    
 Usage:
     $ python instapaper_test.py OR $ ./instapaper_test.py
 
 Technical:
+This program works with the Apple's Safari browser.
+ 
 In order, for the program to auto-log in with your credentials, create a directory 'passwords' in
 '~/bin/'. The two required files should be named instapaper_password.txt and instapaper_username.txt.
-Please note that websites periodically change and some websites will throw an error,
-stating: Page Not Found -The requested URL was not found on this server.
-    
+
 Author: Ed Terrell
 Created: 2025-07-01
 Updated: 2025-07-01
@@ -27,7 +29,6 @@ Version: 0.1.0
 """
 
 # Standard library and third party imports
-
 import pandas as pd
 from dateutil import parser
 from urllib.parse import urlparse
@@ -35,7 +36,7 @@ from bs4 import BeautifulSoup as bs
 
 import time
 import sys
-print (sys.executable)
+#print (sys.executable)
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -52,7 +53,6 @@ with open(base_path / "instapaper_username.txt", "r") as f:
     username = f.read().strip()
 with open(base_path / "instapaper_password.txt", "r") as f:
     password = f.read().strip()
-
 #print(username, password)  # Just for testing
 
 # Start Safari (or Chrome)
